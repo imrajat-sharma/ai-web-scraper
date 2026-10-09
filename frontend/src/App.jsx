@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const API_BASE_URL = "https://ai-web-scraper-theta.vercel.app"
+const API_BASE_URL = (import.meta.env.API_BASE_URL) || "https://ai-web-scraper-theta.vercel.app"
 
 const SAMPLE_URLS = [
   "https://en.wikipedia.org/wiki/History_of_India",
