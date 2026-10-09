@@ -5,7 +5,11 @@ import { scrapePage } from './scraper.js';
 import { summarize, describeConfig } from './ai.js';
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || '*',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  credentials: true,
+}));
 app.use(express.json({ limit: '256kb' }));
 
 app.get('/', (_req, res) => {
