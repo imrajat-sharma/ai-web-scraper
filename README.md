@@ -10,6 +10,8 @@ Browser (React)  →  Express API  →  fetches the URL, extracts text (Cheerio)
 ## Features
 
 - Clean React UI: paste a URL, hit **Summarize**, watch a loading state, read the result
+- Copy summaries to the clipboard or download them as a `.txt` file
+- Light/dark theme toggle (persisted, follows your system preference by default)
 - Backend endpoint that visits the URL, strips navigation/ads/scripts, and keeps the readable text
 - AI summarization via **Google Gemini's free tier** (Groq free tier works as an alternative)
 - Shows page title, source link, chars scraped, provider/model, and total time
