@@ -40,7 +40,7 @@ export function getProvider() {
 export function describeConfig() {
   const provider = getProvider();
   if (provider === 'gemini') {
-    return { provider, model: process.env.GEMINI_MODEL || 'gemini-2.5-flash', keyConfigured: true };
+    return { provider, model: process.env.GEMINI_MODEL || 'gemini-3.8-flash', keyConfigured: true };
   }
   if (provider === 'groq') {
     return { provider, model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile', keyConfigured: true };
@@ -62,9 +62,30 @@ async function readJson(res) {
   }
 }
 
-async function callGemini(prompt) {
+// Free tiers occasionally answer 503 "high demand" - retry a couple of times.
+const RETRY_STATUSES = new Set([503]);
+const MAX_ATTEMPTS = 3;
+
+async function withRetries(makeRequest) {
+  let lastError;
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    try {
+      return await makeRequest();
+    } catch (err) {
+      lastError = err;
+      const status = Number((err.message.match(/\((\d{3})\)/) || [])[1]);
+      if (!RETRY_STATUSES.has(status) || attempt === MAX_ATTEMPTS) throw err;
+      await new Promise((r) => setTimeout(r, attempt * 1500));
+    }
+  }
+  throw lastError;
+}
+
+const callGemini = (prompt) => withRetries(() => geminiRequest(prompt));
+
+async function geminiRequest(prompt) {
   const key = process.env.GEMINI_API_KEY;
-  const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+  const model = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
 
   const res = await fetch(`${GEMINI_ENDPOINT}/${model}:generateContent`, {
     method: 'POST',
@@ -83,6 +104,7 @@ async function callGemini(prompt) {
       throw aiError(`Gemini request failed (${res.status}): ${msg}. Check GEMINI_API_KEY / GEMINI_MODEL in backend/.env.`);
     }
     if (res.status === 429) throw aiError('Gemini rate limit reached - try again in a minute.', 429);
+    if (res.status === 503) throw aiError(`Gemini request failed (503): ${msg}`);
     throw aiError(`Gemini request failed (${res.status}): ${msg}`);
   }
 
@@ -95,7 +117,9 @@ async function callGemini(prompt) {
   return { text, model };
 }
 
-async function callGroq(prompt) {
+const callGroq = (prompt) => withRetries(() => groqRequest(prompt));
+
+async function groqRequest(prompt) {
   const key = process.env.GROQ_API_KEY;
   const model = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
 

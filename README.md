@@ -88,7 +88,7 @@ You should see:
 
 ```
 AI web-scraper API listening on http://localhost:3001
-AI provider: gemini (gemini-2.5-flash)
+AI provider: gemini (gemini-3.8-flash)
 ```
 
 > ⚠️ The `.env` file lives in the **`backend/`** folder — the backend is the only process
@@ -117,7 +117,7 @@ All settings go in `backend/.env`:
 | Variable          | Required | Default                 | Description                              |
 | ----------------- | -------- | ----------------------- | ---------------------------------------- |
 | `GEMINI_API_KEY`  | yes\*    | —                       | Free key from aistudio.google.com        |
-| `GEMINI_MODEL`    | no       | `gemini-2.5-flash`      | Any free-tier Gemini model id            |
+| `GEMINI_MODEL`    | no       | `gemini-3.8-flash`      | Any free-tier Gemini model id            |
 | `PORT`            | no       | `3001`                  | Backend port                             |
 | `GROQ_API_KEY`    | no       | —                       | Use Groq instead of Gemini               |
 | `GROQ_MODEL`      | no       | `llama-3.3-70b-versatile` | Groq model id                          |
@@ -131,7 +131,7 @@ Gemini is used when `GEMINI_API_KEY` is set, otherwise Groq.
 ### `GET /api/health`
 
 ```json
-{ "ok": true, "provider": "gemini", "model": "gemini-2.5-flash", "keyConfigured": true }
+{ "ok": true, "provider": "gemini", "model": "gemini-3.8-flash", "keyConfigured": true }
 ```
 
 ### `POST /api/summarize`
@@ -147,7 +147,7 @@ Success (200):
   "description": "",
   "summary": "The page is a placeholder domain used in documentation examples...",
   "provider": "gemini",
-  "model": "gemini-2.5-flash",
+  "model": "gemini-3.8-flash",
   "scrapedChars": 156,
   "truncated": false,
   "elapsedMs": 2310
@@ -163,7 +163,7 @@ Errors use a JSON body `{ "error": "..." }` with a matching HTTP status:
 - **`503 No AI API key configured`** — you skipped step 1: create `backend/.env` from
   `.env.example` and paste your key, then restart the backend.
 - **`400`/`404` from Gemini** — your key may be invalid, or `GEMINI_MODEL` names a model
-  your key can't use. Remove `GEMINI_MODEL` to fall back to `gemini-2.5-flash`.
+  your key can't use. Remove `GEMINI_MODEL` to fall back to `gemini-3.8-flash`.
 - **`ECONNREFUSED` / network error in the browser** — the backend isn't running on port 3001.
 - **`No readable text found`** — the page needs heavy JavaScript rendering; this app
   intentionally scrapes plain HTML only.

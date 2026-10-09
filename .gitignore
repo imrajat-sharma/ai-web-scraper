@@ -1,4 +1,5 @@
 node_modules/
+.freebuff/
 dist/
 .env
 .env.local
