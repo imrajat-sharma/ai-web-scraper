@@ -8,7 +8,7 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      '/api': 'http://localhost:3001',
+      '/api': 'https://ai-web-scraper-theta.vercel.app/api',
     },
   },
 });
