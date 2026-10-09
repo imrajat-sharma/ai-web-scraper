@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const API_BASE_URL = (import.meta.env.API_BASE_URL) || "https://ai-web-scraper-theta.vercel.app"
+const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const SAMPLE_URLS = [
   "https://en.wikipedia.org/wiki/History_of_India",
@@ -101,7 +101,7 @@ export default function App() {
     setResult(null);
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/summarize`, {
+      const res = await fetch(`${VITE_API_BASE_URL}/api/summarize`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: target }),
