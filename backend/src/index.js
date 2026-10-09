@@ -8,6 +8,10 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: '256kb' }));
 
+app.get('/', (_req, res) => {
+  res.json({ status: 'online', message: 'AI web-scraper API is running.'});
+});
+
 app.get('/api/health', (_req, res) => {
   res.json({ ok: true, ...describeConfig() });
 });
